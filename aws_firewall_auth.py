@@ -40,16 +40,36 @@ for location in locations:
     for group in groups:
         
         if group.name == location["secgroup"]:
-            try:
-                #eliminar grupo de seguridad viejo
-                conn.delete_security_group(name=group.name,group_id=group.id)
+            print "Procesando grupo={name} id_grupo={group_id}".format(name=group.name,group_id=group.id)
+            print
+            for rule in group.rules:
+                try:
+                    print "Eliminando regla {rule} con ip antigua".format(rule=repr(rule))
 
-                #crear grupo de seguridad nuevo
-                web = conn.create_security_group(location["secgroup"], location["secgroup"])
-                web.authorize('tcp', 22, 22, actual_ip+'/32')
-                web.authorize('tcp', 3906, 22, actual_ip+'/32')
-            except boto.exception.EC2ResponseError, e:
-                print "Error modificando regla:"+repr(e)
+                    #eliminar grupo de seguridad viejo
+                    rc_remove = rule.remove_rule(ip_protocol=rule.ip_protocol,
+                                      from_port=rule.from_port,
+                                      to_port=rule.to_port,
+                                      src_group_name=group.name,
+                                      src_group_owner_id=group.owner_id,
+                                      cidr_ip=rule.grants,
+                                      src_group_group_id=group.id)
+
+                    print "Resultado eliminacion :"+repr(rc_remove)
+
+                    #crear grupo de seguridad nuevo
+                    print "Creando regla con ip nueva"
+                    rc_add = rule.add_rule(ip_protocol=rule.ip_protocol,
+                                   from_port=rule.from_port,
+                                   to_port=rule.to_port,
+                                   src_group_name=group.name,
+                                   src_group_owner_id=group.owner_id,
+                                   cidr_ip=actual_ip,
+                                   src_group_group_id=group.id)
+
+                    print "Resultado creacion :"+repr(rc_add)
+                except boto.exception.EC2ResponseError, e:
+                    print "Error modificando regla: nombre_grupo={name} id_grupo={group_id}. Error {e}".format(name=group.name,group_id=group.id, e=repr(e))
                 
 
 
