@@ -1,0 +1,16 @@
+[
+    {
+	"name":"Grupo JAD",
+	"region":"us-east-1",
+	"secgroup":"casa_hurtado",
+	"aws_access_key_id" : "sample_key",
+	"aws_secret_access_key": "sample_secret"
+    },
+    {
+	"name":"Grupo JAD",
+	"region":"us-west-2",
+	"secgroup":"casa_hurtado",
+	"aws_access_key_id" : "sample_key",
+	"aws_secret_access_key": "sample_secret"
+    }
+]
