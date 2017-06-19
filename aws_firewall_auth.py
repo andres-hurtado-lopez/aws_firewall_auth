@@ -4,7 +4,7 @@
 import boto.ec2
 import boto.exception
 import json
-import subprocess
+import urllib3
 import sys
 import re
 
@@ -13,9 +13,10 @@ print "|      Proceso de actualizacion de Firewall Servidores AWS   |"
 print "=============================================================="
 print
 print "=== Obteniendo la direccion ip actual ==="
-s = subprocess.check_output(["curl", "--silent", "http://whatsmyip.com"])
+http = urllib3.PoolManager()
+s = http.request('GET', 'http://whatsmyip.com')
 p = re.compile(r'\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b')
-ips = p.findall(s)
+ips = p.findall(s.data)
 
 if len(ips) < 1:
     print "No se pudo determinar la direccion IP usando http://whatsmyip.com"
