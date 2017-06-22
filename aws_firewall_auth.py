@@ -7,7 +7,9 @@ import json
 import urllib3
 import sys
 import re
+import os
 
+base_path = os.path.dirname(os.path.abspath(__file__))
 print "=============================================================="
 print "|      Proceso de actualizacion de Firewall Servidores AWS   |"
 print "=============================================================="
@@ -26,7 +28,7 @@ print "Direccion IP obtenida: " + ips[0]
 
 actual_ip = ips[0]
 
-locations = json.load(open('config.json'))
+locations = json.load(open(base_path+'/config.json'))
 
 for location in locations:
     #conectarse con la region AWS
